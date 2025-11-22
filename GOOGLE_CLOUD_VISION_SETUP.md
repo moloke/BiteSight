@@ -47,15 +47,15 @@
 
 Your `.env` should now have all these values filled in:
 ```bash
-EXPO_PUBLIC_FIREBASE_API_KEY=AIzaSyAxQIb6N1h4DV_o1ZdzZQN2LIdJhuttqGs
-EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=bitesight-dc416.firebaseapp.com
-EXPO_PUBLIC_FIREBASE_PROJECT_ID=bitesight-dc416
-EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=bitesight-dc416.firebasestorage.app
-EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=1001647028140
-EXPO_PUBLIC_FIREBASE_APP_ID=1:1001647028140:ios:da98ee83a8b0c56ec7ec09
-EXPO_PUBLIC_API_BASE_URL=https://us-central1-bitesight-dc416.cloudfunctions.net
-GOOGLE_CLOUD_VISION_API_KEY=AIza... (your actual key)
-FIREBASE_FUNCTIONS_URL=https://us-central1-bitesight-dc416.cloudfunctions.net/api
+EXPO_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project-id.firebaseapp.com
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project-id.firebasestorage.app
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+EXPO_PUBLIC_FIREBASE_APP_ID=your_app_id
+EXPO_PUBLIC_API_BASE_URL=https://us-central1-your-project-id.cloudfunctions.net
+EXPO_PUBLIC_GOOGLE_CLOUD_VISION_API_KEY=your_cloud_vision_api_key
+FIREBASE_FUNCTIONS_URL=https://us-central1-your-project-id.cloudfunctions.net/api
 ```
 
 ## Pricing Information
