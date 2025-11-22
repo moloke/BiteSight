@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../constants/Config';
+import { Config } from '../../constants/Config';
 
 export default function SettingsScreen() {
     return (
@@ -16,10 +16,10 @@ export default function SettingsScreen() {
                     <Text style={styles.sectionTitle}>Account</Text>
                     <TouchableOpacity style={styles.settingItem}>
                         <View style={styles.settingLeft}>
-                            <Ionicons name="person-outline" size={24} color={Colors.text} />
+                            <Ionicons name="person-outline" size={24} color={Config.Colors.text} />
                             <Text style={styles.settingText}>Sign In</Text>
                         </View>
-                        <Ionicons name="chevron-forward" size={20} color={Colors.textSecondary} />
+                        <Ionicons name="chevron-forward" size={20} color={Config.Colors.textSecondary} />
                     </TouchableOpacity>
                 </View>
 
@@ -29,23 +29,23 @@ export default function SettingsScreen() {
 
                     <TouchableOpacity style={styles.settingItem}>
                         <View style={styles.settingLeft}>
-                            <Ionicons name="language-outline" size={24} color={Colors.text} />
+                            <Ionicons name="language-outline" size={24} color={Config.Colors.text} />
                             <Text style={styles.settingText}>Translation Language</Text>
                         </View>
                         <View style={styles.settingRight}>
                             <Text style={styles.settingValue}>English</Text>
-                            <Ionicons name="chevron-forward" size={20} color={Colors.textSecondary} />
+                            <Ionicons name="chevron-forward" size={20} color={Config.Colors.textSecondary} />
                         </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.settingItem}>
                         <View style={styles.settingLeft}>
-                            <Ionicons name="cloud-upload-outline" size={24} color={Colors.text} />
+                            <Ionicons name="cloud-upload-outline" size={24} color={Config.Colors.text} />
                             <Text style={styles.settingText}>Upload Images</Text>
                         </View>
                         <View style={styles.settingRight}>
                             <Text style={styles.settingValue}>Off</Text>
-                            <Ionicons name="chevron-forward" size={20} color={Colors.textSecondary} />
+                            <Ionicons name="chevron-forward" size={20} color={Config.Colors.textSecondary} />
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -56,7 +56,7 @@ export default function SettingsScreen() {
 
                     <TouchableOpacity style={styles.settingItem}>
                         <View style={styles.settingLeft}>
-                            <Ionicons name="information-circle-outline" size={24} color={Colors.text} />
+                            <Ionicons name="information-circle-outline" size={24} color={Config.Colors.text} />
                             <Text style={styles.settingText}>Version</Text>
                         </View>
                         <Text style={styles.settingValue}>1.0.0</Text>
@@ -64,10 +64,10 @@ export default function SettingsScreen() {
 
                     <TouchableOpacity style={styles.settingItem}>
                         <View style={styles.settingLeft}>
-                            <Ionicons name="shield-outline" size={24} color={Colors.text} />
+                            <Ionicons name="shield-outline" size={24} color={Config.Colors.text} />
                             <Text style={styles.settingText}>Privacy Policy</Text>
                         </View>
-                        <Ionicons name="chevron-forward" size={20} color={Colors.textSecondary} />
+                        <Ionicons name="chevron-forward" size={20} color={Config.Colors.textSecondary} />
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -78,19 +78,19 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.background,
+        backgroundColor: Config.Colors.background,
     },
     header: {
         padding: 24,
         paddingTop: 60,
-        backgroundColor: Colors.surface,
+        backgroundColor: Config.Colors.surface,
         borderBottomWidth: 1,
-        borderBottomColor: Colors.border,
+        borderBottomColor: Config.Colors.border,
     },
     title: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: Colors.text,
+        color: Config.Colors.text,
     },
     content: {
         flex: 1,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 13,
         fontWeight: '600',
-        color: Colors.textSecondary,
+        color: Config.Colors.textSecondary,
         textTransform: 'uppercase',
         letterSpacing: 0.5,
         marginBottom: 8,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
         backgroundColor: 'white',
         borderBottomWidth: 1,
-        borderBottomColor: Colors.border,
+        borderBottomColor: Config.Colors.border,
     },
     settingLeft: {
         flexDirection: 'row',
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     },
     settingText: {
         fontSize: 16,
-        color: Colors.text,
+        color: Config.Colors.text,
         marginLeft: 16,
     },
     settingRight: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     },
     settingValue: {
         fontSize: 16,
-        color: Colors.textSecondary,
+        color: Config.Colors.textSecondary,
         marginRight: 8,
     },
 });

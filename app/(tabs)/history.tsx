@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Colors } from '../../constants/Config';
+import { Config } from '../../constants/Config';
 
 export default function HistoryScreen() {
     return (
@@ -25,24 +25,24 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.background,
+        backgroundColor: Config.Colors.background,
     },
     header: {
         padding: 24,
         paddingTop: 60,
-        backgroundColor: Colors.surface,
+        backgroundColor: Config.Colors.surface,
         borderBottomWidth: 1,
-        borderBottomColor: Colors.border,
+        borderBottomColor: Config.Colors.border,
     },
     title: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: Colors.text,
+        color: Config.Colors.text,
         marginBottom: 4,
     },
     subtitle: {
         fontSize: 14,
-        color: Colors.textSecondary,
+        color: Config.Colors.textSecondary,
     },
     content: {
         flex: 1,
@@ -54,12 +54,12 @@ const styles = StyleSheet.create({
     emptyText: {
         fontSize: 18,
         fontWeight: '600',
-        color: Colors.textSecondary,
+        color: Config.Colors.textSecondary,
         marginBottom: 8,
     },
     emptySubtext: {
         fontSize: 14,
-        color: Colors.textSecondary,
+        color: Config.Colors.textSecondary,
         textAlign: 'center',
     },
 });

@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../constants/Config';
+import { Config } from '../../constants/Config';
 import { useRouter } from 'expo-router';
+import { detectText } from '@/services/ocr/textDetection';
+import { groupTextBlocks } from '@/services/ocr/textGrouping';
 
 export default function CameraScreen() {
     const [permission, requestPermission] = useCameraPermissions();
@@ -15,7 +17,7 @@ export default function CameraScreen() {
     if (!permission) {
         return (
             <View style={styles.container}>
-                <ActivityIndicator size="large" color={Colors.primary} />
+                <ActivityIndicator size="large" color={Config.Colors.primary} />
             </View>
         );
     }
@@ -23,7 +25,7 @@ export default function CameraScreen() {
     if (!permission.granted) {
         return (
             <View style={styles.permissionContainer}>
-                <Ionicons name="camera-outline" size={80} color={Colors.textSecondary} />
+                <Ionicons name="camera-outline" size={80} color={Config.Colors.textSecondary} />
                 <Text style={styles.permissionTitle}>Camera Access Required</Text>
                 <Text style={styles.permissionText}>
                     BiteSight needs camera access to scan menu items and recognize text.
@@ -40,17 +42,59 @@ export default function CameraScreen() {
 
         setIsProcessing(true);
         try {
-            // TODO: Implement OCR capture logic
-            // const photo = await cameraRef.current.takePictureAsync();
-            // Process OCR and navigate to results
+            // Take picture
+            const photo = await cameraRef.current.takePictureAsync({
+                quality: 0.8,
+                base64: false,
+            });
 
-            // For now, just navigate to results (placeholder)
-            setTimeout(() => {
+            if (!photo) {
+                throw new Error('Failed to capture photo');
+            }
+
+            // Detect text using Google Cloud Vision
+            const ocrResult = await detectText(photo.uri);
+
+            if (ocrResult.blocks.length === 0) {
+                Alert.alert(
+                    'No Text Detected',
+                    'Could not detect any text in the image. Please try again with better lighting or a clearer view.',
+                    [{ text: 'OK' }]
+                );
                 setIsProcessing(false);
-                router.push('/scan-results');
-            }, 1000);
+                return;
+            }
+
+            // Group text into menu items
+            const groupedItems = groupTextBlocks(ocrResult);
+
+            if (groupedItems.length === 0) {
+                Alert.alert(
+                    'No Menu Items Found',
+                    'Could not identify menu items. Please try capturing the menu again.',
+                    [{ text: 'OK' }]
+                );
+                setIsProcessing(false);
+                return;
+            }
+
+            // Navigate to scan results with OCR data
+            router.push({
+                pathname: '/scan-results',
+                params: {
+                    ocrData: JSON.stringify(groupedItems),
+                    imageUri: photo.uri,
+                },
+            });
+
+            setIsProcessing(false);
         } catch (error) {
             console.error('Capture error:', error);
+            Alert.alert(
+                'OCR Error',
+                'Failed to process the image. Please check your internet connection and try again.',
+                [{ text: 'OK' }]
+            );
             setIsProcessing(false);
         }
     };
@@ -116,31 +160,31 @@ export default function CameraScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.background,
+        backgroundColor: Config.Colors.background,
     },
     permissionContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 24,
-        backgroundColor: Colors.background,
+        backgroundColor: Config.Colors.background,
     },
     permissionTitle: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: Colors.text,
+        color: Config.Colors.text,
         marginTop: 24,
         marginBottom: 12,
     },
     permissionText: {
         fontSize: 16,
-        color: Colors.textSecondary,
+        color: Config.Colors.textSecondary,
         textAlign: 'center',
         marginBottom: 32,
         lineHeight: 24,
     },
     permissionButton: {
-        backgroundColor: Colors.primary,
+        backgroundColor: Config.Colors.primary,
         paddingHorizontal: 32,
         paddingVertical: 16,
         borderRadius: 12,

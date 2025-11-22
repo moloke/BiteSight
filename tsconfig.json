@@ -3,7 +3,13 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "jsx": "react-native"
+    "jsx": "react-native",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
   },
   "extends": "expo/tsconfig.base"
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../constants/Config';
+import { Config } from '../constants/Config';
 
 const { width } = Dimensions.get('window');
 
@@ -37,7 +37,7 @@ export default function ItemDetailScreen() {
                 {/* Image Gallery */}
                 <View style={styles.imageContainer}>
                     <View style={styles.imagePlaceholder}>
-                        <Ionicons name="image-outline" size={80} color={Colors.textSecondary} />
+                        <Ionicons name="image-outline" size={80} color={Config.Colors.textSecondary} />
                         <Text style={styles.imagePlaceholderText}>Image loading...</Text>
                     </View>
 
@@ -49,7 +49,7 @@ export default function ItemDetailScreen() {
                             <Ionicons
                                 name={isFavorite ? 'heart' : 'heart-outline'}
                                 size={24}
-                                color={isFavorite ? Colors.error : 'white'}
+                                color={isFavorite ? Config.Colors.error : 'white'}
                             />
                         </TouchableOpacity>
                     </View>
@@ -73,7 +73,7 @@ export default function ItemDetailScreen() {
                     {mockItem.cooking && (
                         <View style={styles.section}>
                             <View style={styles.badge}>
-                                <Ionicons name="flame-outline" size={16} color={Colors.primary} />
+                                <Ionicons name="flame-outline" size={16} color={Config.Colors.primary} />
                                 <Text style={styles.badgeText}>{mockItem.cooking}</Text>
                             </View>
                         </View>
@@ -85,7 +85,7 @@ export default function ItemDetailScreen() {
                         <View style={styles.ingredientList}>
                             {mockItem.ingredients.map((ingredient, index) => (
                                 <View key={index} style={styles.ingredientItem}>
-                                    <Ionicons name="checkmark-circle" size={20} color={Colors.success} />
+                                    <Ionicons name="checkmark-circle" size={20} color={Config.Colors.success} />
                                     <Text style={styles.ingredientText}>{ingredient}</Text>
                                 </View>
                             ))}
@@ -96,7 +96,7 @@ export default function ItemDetailScreen() {
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Allergens</Text>
                         <View style={styles.allergenBadge}>
-                            <Ionicons name="shield-checkmark" size={20} color={Colors.success} />
+                            <Ionicons name="shield-checkmark" size={20} color={Config.Colors.success} />
                             <Text style={styles.allergenText}>No common allergens detected</Text>
                         </View>
                     </View>
@@ -109,8 +109,8 @@ export default function ItemDetailScreen() {
                                 style={[styles.feedbackButton, styles.feedbackButtonLike]}
                                 onPress={() => handleFeedback('like')}
                             >
-                                <Ionicons name="thumbs-up-outline" size={20} color={Colors.success} />
-                                <Text style={[styles.feedbackButtonText, { color: Colors.success }]}>
+                                <Ionicons name="thumbs-up-outline" size={20} color={Config.Colors.success} />
+                                <Text style={[styles.feedbackButtonText, { color: Config.Colors.success }]}>
                                     Yes
                                 </Text>
                             </TouchableOpacity>
@@ -119,8 +119,8 @@ export default function ItemDetailScreen() {
                                 style={[styles.feedbackButton, styles.feedbackButtonDislike]}
                                 onPress={() => handleFeedback('dislike')}
                             >
-                                <Ionicons name="thumbs-down-outline" size={20} color={Colors.error} />
-                                <Text style={[styles.feedbackButtonText, { color: Colors.error }]}>
+                                <Ionicons name="thumbs-down-outline" size={20} color={Config.Colors.error} />
+                                <Text style={[styles.feedbackButtonText, { color: Config.Colors.error }]}>
                                     No
                                 </Text>
                             </TouchableOpacity>
@@ -141,12 +141,12 @@ export default function ItemDetailScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.background,
+        backgroundColor: Config.Colors.background,
     },
     imageContainer: {
         width: width,
         height: width * 0.75,
-        backgroundColor: Colors.surface,
+        backgroundColor: Config.Colors.surface,
         position: 'relative',
     },
     imagePlaceholder: {
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     imagePlaceholderText: {
         marginTop: 12,
         fontSize: 14,
-        color: Colors.textSecondary,
+        color: Config.Colors.textSecondary,
     },
     imageControls: {
         position: 'absolute',
@@ -184,15 +184,15 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: Colors.text,
+        color: Config.Colors.text,
         marginBottom: 4,
     },
     translation: {
         fontSize: 18,
-        color: Colors.textSecondary,
+        color: Config.Colors.textSecondary,
     },
     confidenceBadge: {
-        backgroundColor: Colors.primary,
+        backgroundColor: Config.Colors.primary,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 16,
@@ -208,13 +208,13 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: Colors.text,
+        color: Config.Colors.text,
         marginBottom: 12,
     },
     badge: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: Colors.surface,
+        backgroundColor: Config.Colors.surface,
         paddingHorizontal: 12,
         paddingVertical: 8,
         borderRadius: 8,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     badgeText: {
         fontSize: 14,
         fontWeight: '600',
-        color: Colors.primary,
+        color: Config.Colors.primary,
         marginLeft: 6,
         textTransform: 'capitalize',
     },
@@ -236,20 +236,20 @@ const styles = StyleSheet.create({
     },
     ingredientText: {
         fontSize: 16,
-        color: Colors.text,
+        color: Config.Colors.text,
         marginLeft: 8,
         textTransform: 'capitalize',
     },
     allergenBadge: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: Colors.surface,
+        backgroundColor: Config.Colors.surface,
         padding: 12,
         borderRadius: 8,
     },
     allergenText: {
         fontSize: 14,
-        color: Colors.text,
+        color: Config.Colors.text,
         marginLeft: 8,
     },
     feedbackButtons: {
@@ -266,12 +266,12 @@ const styles = StyleSheet.create({
         borderWidth: 2,
     },
     feedbackButtonLike: {
-        borderColor: Colors.success,
-        backgroundColor: `${Colors.success}10`,
+        borderColor: Config.Colors.success,
+        backgroundColor: `${Config.Colors.success}10`,
     },
     feedbackButtonDislike: {
-        borderColor: Colors.error,
-        backgroundColor: `${Colors.error}10`,
+        borderColor: Config.Colors.error,
+        backgroundColor: `${Config.Colors.error}10`,
     },
     feedbackButtonText: {
         fontSize: 16,
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: Colors.primary,
+        backgroundColor: Config.Colors.primary,
         padding: 16,
         borderRadius: 12,
         marginTop: 8,
