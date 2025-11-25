@@ -1,23 +1,29 @@
-import storage from '@react-native-firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { storage } from './config';
 
 /**
  * Upload an image to Firebase Storage
+ * Works on both web and native platforms
  */
 export async function uploadImage(
     userId: string,
     imageUri: string,
-    scanId: string
+    path: string
 ): Promise<string> {
     try {
         const filename = `${Date.now()}.jpg`;
-        const path = `users/${userId}/scans/${scanId}/${filename}`;
-        const reference = storage().ref(path);
+        const storagePath = `users/${userId}/${path}/${filename}`;
+        const storageRef = ref(storage, storagePath);
 
-        // Upload file
-        await reference.putFile(imageUri);
+        // Fetch the image as a blob
+        const response = await fetch(imageUri);
+        const blob = await response.blob();
+
+        // Upload the blob
+        await uploadBytes(storageRef, blob);
 
         // Get download URL
-        const url = await reference.getDownloadURL();
+        const url = await getDownloadURL(storageRef);
         return url;
     } catch (error) {
         console.error('Error uploading image:', error);
@@ -30,8 +36,8 @@ export async function uploadImage(
  */
 export async function getImageUrl(path: string): Promise<string> {
     try {
-        const reference = storage().ref(path);
-        return await reference.getDownloadURL();
+        const storageRef = ref(storage, path);
+        return await getDownloadURL(storageRef);
     } catch (error) {
         console.error('Error getting image URL:', error);
         throw error;
@@ -41,10 +47,11 @@ export async function getImageUrl(path: string): Promise<string> {
 /**
  * Delete an image from storage
  */
-export async function deleteImage(path: string): Promise<void> {
+export async function deleteImage(url: string): Promise<void> {
     try {
-        const reference = storage().ref(path);
-        await reference.delete();
+        // Extract path from URL
+        const storageRef = ref(storage, url);
+        await deleteObject(storageRef);
     } catch (error) {
         console.error('Error deleting image:', error);
         throw error;
@@ -61,7 +68,7 @@ export async function uploadScanImages(
 ): Promise<string[]> {
     try {
         const uploadPromises = imageUris.map(uri =>
-            uploadImage(userId, uri, scanId)
+            uploadImage(userId, uri, `scans/${scanId}`)
         );
         return await Promise.all(uploadPromises);
     } catch (error) {

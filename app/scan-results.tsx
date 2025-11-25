@@ -1,19 +1,83 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Config } from '../constants/Config';
 import { GroupedMenuItem } from '@/types/OCR';
+import { useAuthContext } from '@/providers/AuthProvider';
+import { getScan } from '@/services/firebase/firestore';
 
 export default function ScanResultsScreen() {
     const router = useRouter();
     const params = useLocalSearchParams();
+    const { user } = useAuthContext();
 
-    // Parse OCR data from route params
-    const ocrData = params.ocrData ? JSON.parse(params.ocrData as string) as GroupedMenuItem[] : [];
-    const imageUri = params.imageUri as string;
+    const [ocrData, setOcrData] = useState<GroupedMenuItem[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    // If no data, show empty state
+    // Load scan data
+    useEffect(() => {
+        async function loadScan() {
+            const scanId = params.scanId as string;
+
+            if (scanId && user) {
+                // Load from Firestore
+                setLoading(true);
+                try {
+                    const scan = await getScan(user.id, scanId);
+                    if (scan) {
+                        setOcrData(scan.items);
+                    } else {
+                        setError('Scan not found');
+                    }
+                } catch (err) {
+                    console.error('Error loading scan:', err);
+                    setError('Failed to load scan');
+                } finally {
+                    setLoading(false);
+                }
+            } else if (params.ocrData) {
+                // Use OCR data from params (new scan)
+                setOcrData(JSON.parse(params.ocrData as string) as GroupedMenuItem[]);
+            }
+        }
+
+        loadScan();
+    }, [params.scanId, params.ocrData, user]);
+
+    // Loading state
+    if (loading) {
+        return (
+            <View style={styles.container}>
+                <View style={styles.emptyState}>
+                    <ActivityIndicator size="large" color={Config.Colors.primary} />
+                    <Text style={styles.emptyText}>Loading scan...</Text>
+                </View>
+            </View>
+        );
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <View style={styles.container}>
+                <View style={styles.emptyState}>
+                    <Ionicons name="alert-circle-outline" size={80} color={Config.Colors.error} />
+                    <Text style={styles.emptyTitle}>Error</Text>
+                    <Text style={styles.emptyText}>{error}</Text>
+                    <TouchableOpacity
+                        style={styles.retryButton}
+                        onPress={() => router.back()}
+                    >
+                        <Text style={styles.retryButtonText}>Go Back</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        );
+    }
+
+    // Empty state
     if (ocrData.length === 0) {
         return (
             <View style={styles.container}>

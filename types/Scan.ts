@@ -1,33 +1,31 @@
+import { GroupedMenuItem } from './OCR';
+
 // TypeScript type definitions for Scans
 export interface Scan {
-    scanId: string;
-    userId?: string;
-    timestamp: number;
-    source: 'camera' | 'imageUpload';
+    id: string;
+    userId: string;
+    items: GroupedMenuItem[];
     imageUrl?: string;
-    regionMetadata?: RegionMetadata;
-    itemIds: string[];
-    status?: 'processing' | 'completed' | 'failed';
+    timestamp: string;
+    itemCount: number;
+    location?: {
+        latitude: number;
+        longitude: number;
+        name?: string;
+    };
+    createdAt: string;
+    updatedAt: string;
 }
 
-export interface RegionMetadata {
-    lat: number;
-    lng: number;
-    country?: string;
-    city?: string;
-}
-
-export interface ParsedScan {
-    scanId: string;
-    items: ParsedItem[];
-}
-
-export interface ParsedItem {
-    itemId: string;
-    rawText: string;
-    boundingBox?: BoundingBox;
-    language: string;
-    confidence: number;
+export interface ScanInput {
+    items: GroupedMenuItem[];
+    timestamp: string;
+    itemCount: number;
+    location?: {
+        latitude: number;
+        longitude: number;
+        name?: string;
+    };
 }
 
 export interface BoundingBox {

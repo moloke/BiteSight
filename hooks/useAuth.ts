@@ -16,6 +16,13 @@ export function useAuth() {
         return unsubscribe;
     }, []);
 
+    // Auto sign-in anonymously if no user
+    useEffect(() => {
+        if (!user && !loading) {
+            signIn();
+        }
+    }, [user, loading]);
+
     const signIn = async () => {
         try {
             setLoading(true);
@@ -24,6 +31,7 @@ export function useAuth() {
             setUser(user);
         } catch (err) {
             setError(err as Error);
+            console.error('Sign in error:', err);
         } finally {
             setLoading(false);
         }

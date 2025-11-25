@@ -6,6 +6,8 @@ import { Config } from '../../constants/Config';
 import { useRouter } from 'expo-router';
 import { detectText } from '@/services/ocr/textDetection';
 import { groupTextBlocks } from '@/services/ocr/textGrouping';
+import { useAuthContext } from '@/providers/AuthProvider';
+import { saveScanWithImage } from '@/services/firebase/scans';
 
 export default function CameraScreen() {
     const [permission, requestPermission] = useCameraPermissions();
@@ -13,6 +15,7 @@ export default function CameraScreen() {
     const [autoOCR, setAutoOCR] = useState(false);
     const cameraRef = useRef<CameraView>(null);
     const router = useRouter();
+    const { user } = useAuthContext();
 
     if (!permission) {
         return (
@@ -78,14 +81,47 @@ export default function CameraScreen() {
                 return;
             }
 
-            // Navigate to scan results with OCR data
-            router.push({
-                pathname: '/scan-results',
-                params: {
-                    ocrData: JSON.stringify(groupedItems),
-                    imageUri: photo.uri,
-                },
-            });
+            // Save scan to Firestore with image
+            if (user) {
+                try {
+                    const scanId = await saveScanWithImage(
+                        user.id,
+                        {
+                            items: groupedItems,
+                            timestamp: new Date().toISOString(),
+                            itemCount: groupedItems.length,
+                        },
+                        photo.uri
+                    );
+
+                    // Navigate to scan results with scan ID
+                    router.push({
+                        pathname: '/scan-results',
+                        params: {
+                            scanId,
+                        },
+                    });
+                } catch (saveError) {
+                    console.error('Save error:', saveError);
+                    // Still navigate to results even if save fails
+                    router.push({
+                        pathname: '/scan-results',
+                        params: {
+                            ocrData: JSON.stringify(groupedItems),
+                            imageUri: photo.uri,
+                        },
+                    });
+                }
+            } else {
+                // No user - just show results without saving
+                router.push({
+                    pathname: '/scan-results',
+                    params: {
+                        ocrData: JSON.stringify(groupedItems),
+                        imageUri: photo.uri,
+                    },
+                });
+            }
 
             setIsProcessing(false);
         } catch (error) {
