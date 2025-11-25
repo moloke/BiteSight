@@ -1,12 +1,18 @@
-import auth from '@react-native-firebase/auth';
-import { User, AuthState } from '@/types/User';
+import {
+    signInAnonymously as firebaseSignInAnonymously,
+    signOut as firebaseSignOut,
+    onAuthStateChanged as firebaseOnAuthStateChanged,
+    User as FirebaseUser,
+} from 'firebase/auth';
+import { auth } from './config';
+import { User } from '@/types/User';
 
 /**
  * Sign in anonymously for quick access
  */
 export async function signInAnonymously(): Promise<User | null> {
     try {
-        const userCredential = await auth().signInAnonymously();
+        const userCredential = await firebaseSignInAnonymously(auth);
         return mapFirebaseUser(userCredential.user);
     } catch (error) {
         console.error('Anonymous sign-in error:', error);
@@ -19,7 +25,7 @@ export async function signInAnonymously(): Promise<User | null> {
  */
 export async function signOut(): Promise<void> {
     try {
-        await auth().signOut();
+        await firebaseSignOut(auth);
     } catch (error) {
         console.error('Sign out error:', error);
         throw error;
@@ -30,7 +36,7 @@ export async function signOut(): Promise<void> {
  * Get current authenticated user
  */
 export function getCurrentUser(): User | null {
-    const firebaseUser = auth().currentUser;
+    const firebaseUser = auth.currentUser;
     return firebaseUser ? mapFirebaseUser(firebaseUser) : null;
 }
 
@@ -38,7 +44,7 @@ export function getCurrentUser(): User | null {
  * Listen to authentication state changes
  */
 export function onAuthStateChanged(callback: (user: User | null) => void): () => void {
-    return auth().onAuthStateChanged((firebaseUser) => {
+    return firebaseOnAuthStateChanged(auth, (firebaseUser) => {
         callback(firebaseUser ? mapFirebaseUser(firebaseUser) : null);
     });
 }
@@ -46,7 +52,7 @@ export function onAuthStateChanged(callback: (user: User | null) => void): () =>
 /**
  * Map Firebase user to our User type
  */
-function mapFirebaseUser(firebaseUser: any): User {
+function mapFirebaseUser(firebaseUser: FirebaseUser): User {
     return {
         id: firebaseUser.uid,
         email: firebaseUser.email || undefined,
@@ -68,7 +74,6 @@ function mapFirebaseUser(firebaseUser: any): User {
  */
 export async function signInWithGoogle(): Promise<User | null> {
     // TODO: Implement Google Sign In
-    // Requires @react-native-google-signin/google-signin
     throw new Error('Google Sign In not implemented yet');
 }
 
@@ -78,6 +83,5 @@ export async function signInWithGoogle(): Promise<User | null> {
  */
 export async function signInWithApple(): Promise<User | null> {
     // TODO: Implement Apple Sign In
-    // Requires @invertase/react-native-apple-authentication
     throw new Error('Apple Sign In not implemented yet');
 }

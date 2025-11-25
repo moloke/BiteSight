@@ -11,20 +11,14 @@ export default function ItemDetailScreen() {
     const params = useLocalSearchParams();
     const [isFavorite, setIsFavorite] = useState(false);
 
-    // TODO: Fetch actual item data based on params.id
-    const mockItem = {
-        id: params.id,
-        name: 'Pollo asado',
-        translation: 'Roasted chicken',
-        ingredients: ['chicken', 'garlic', 'olive oil', 'herbs'],
-        cooking: 'roasted',
-        allergens: ['none'],
-        confidence: 0.92,
-        images: [
-            { url: 'https://via.placeholder.com/400', source: 'unsplash' },
-            { url: 'https://via.placeholder.com/400', source: 'pexels' },
-        ],
-    };
+    // Get item data from params
+    const itemText = params.itemText as string || 'Unknown Item';
+    const itemId = params.itemId as string;
+
+    // Parse the item text (first line is usually the name)
+    const lines = itemText.split('\n').filter(line => line.trim());
+    const itemName = lines[0] || itemText;
+    const itemDescription = lines.slice(1).join(' ');
 
     const handleFeedback = (type: 'like' | 'dislike') => {
         // TODO: Submit feedback to backend
@@ -34,11 +28,13 @@ export default function ItemDetailScreen() {
     return (
         <View style={styles.container}>
             <ScrollView>
-                {/* Image Gallery */}
+                {/* Image Placeholder */}
                 <View style={styles.imageContainer}>
                     <View style={styles.imagePlaceholder}>
-                        <Ionicons name="image-outline" size={80} color={Config.Colors.textSecondary} />
-                        <Text style={styles.imagePlaceholderText}>Image loading...</Text>
+                        <Ionicons name="restaurant-outline" size={80} color={Config.Colors.textSecondary} />
+                        <Text style={styles.imagePlaceholderText}>
+                            Image search coming soon
+                        </Text>
                     </View>
 
                     <View style={styles.imageControls}>
@@ -58,72 +54,29 @@ export default function ItemDetailScreen() {
                 {/* Item Details */}
                 <View style={styles.content}>
                     <View style={styles.header}>
-                        <View>
-                            <Text style={styles.name}>{mockItem.name}</Text>
-                            <Text style={styles.translation}>{mockItem.translation}</Text>
+                        <View style={{ flex: 1 }}>
+                            <Text style={styles.name}>{itemName}</Text>
+                            {itemDescription && (
+                                <Text style={styles.translation}>{itemDescription}</Text>
+                            )}
                         </View>
-                        <View style={styles.confidenceBadge}>
-                            <Text style={styles.confidenceText}>
-                                {Math.round(mockItem.confidence * 100)}%
+                    </View>
+
+                    {/* Raw OCR Text */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Detected Text</Text>
+                        <View style={styles.textBox}>
+                            <Text style={styles.detectedText}>{itemText}</Text>
+                        </View>
+                    </View>
+
+                    {/* Info Message */}
+                    <View style={styles.section}>
+                        <View style={styles.infoBadge}>
+                            <Ionicons name="information-circle" size={20} color={Config.Colors.primary} />
+                            <Text style={styles.infoText}>
+                                Ingredient analysis and allergen detection coming soon with LLM integration
                             </Text>
-                        </View>
-                    </View>
-
-                    {/* Cooking Method */}
-                    {mockItem.cooking && (
-                        <View style={styles.section}>
-                            <View style={styles.badge}>
-                                <Ionicons name="flame-outline" size={16} color={Config.Colors.primary} />
-                                <Text style={styles.badgeText}>{mockItem.cooking}</Text>
-                            </View>
-                        </View>
-                    )}
-
-                    {/* Ingredients */}
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Ingredients</Text>
-                        <View style={styles.ingredientList}>
-                            {mockItem.ingredients.map((ingredient, index) => (
-                                <View key={index} style={styles.ingredientItem}>
-                                    <Ionicons name="checkmark-circle" size={20} color={Config.Colors.success} />
-                                    <Text style={styles.ingredientText}>{ingredient}</Text>
-                                </View>
-                            ))}
-                        </View>
-                    </View>
-
-                    {/* Allergens */}
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Allergens</Text>
-                        <View style={styles.allergenBadge}>
-                            <Ionicons name="shield-checkmark" size={20} color={Config.Colors.success} />
-                            <Text style={styles.allergenText}>No common allergens detected</Text>
-                        </View>
-                    </View>
-
-                    {/* Image Feedback */}
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Is this image accurate?</Text>
-                        <View style={styles.feedbackButtons}>
-                            <TouchableOpacity
-                                style={[styles.feedbackButton, styles.feedbackButtonLike]}
-                                onPress={() => handleFeedback('like')}
-                            >
-                                <Ionicons name="thumbs-up-outline" size={20} color={Config.Colors.success} />
-                                <Text style={[styles.feedbackButtonText, { color: Config.Colors.success }]}>
-                                    Yes
-                                </Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                style={[styles.feedbackButton, styles.feedbackButtonDislike]}
-                                onPress={() => handleFeedback('dislike')}
-                            >
-                                <Ionicons name="thumbs-down-outline" size={20} color={Config.Colors.error} />
-                                <Text style={[styles.feedbackButtonText, { color: Config.Colors.error }]}>
-                                    No
-                                </Text>
-                            </TouchableOpacity>
                         </View>
                     </View>
 
@@ -292,5 +245,31 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: 'white',
         marginLeft: 8,
+    },
+    textBox: {
+        backgroundColor: Config.Colors.surface,
+        padding: 16,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: Config.Colors.border,
+    },
+    detectedText: {
+        fontSize: 14,
+        color: Config.Colors.text,
+        lineHeight: 20,
+    },
+    infoBadge: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        backgroundColor: `${Config.Colors.primary}15`,
+        padding: 12,
+        borderRadius: 8,
+        gap: 8,
+    },
+    infoText: {
+        flex: 1,
+        fontSize: 14,
+        color: Config.Colors.text,
+        lineHeight: 20,
     },
 });
